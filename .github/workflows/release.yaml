@@ -1,0 +1,56 @@
+name: Release
+run-name: Release Joomla-Mautic Package 🚀
+on: 
+  push:
+    tags: '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+
+      - name: Check out repository code
+        uses: https://github.com/actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: https://github.com/actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        id: npm-dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Setup PHP
+        id: setup-php-tools
+        uses: https://github.com/shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+        env:
+          tools: composer:v2
+
+      - name: Install composer deps
+        id: composer-install
+        run: |
+          composer i
+
+      - name: package.json info
+        id: info-package
+        uses: https://github.com/jaywcjlove/github-action-package@main
+
+      - name: Prepare and build package
+        id: prepare-package
+        run: |
+          echo "Build Package"
+          npm run build:prod
+
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag: ${{ github.ref_name }}
+          release_name: "Release of ${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}"
+          body: "Release of ${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}"
+          files: ./build/${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}.zip
+          draft: true
+          fail_on_unmatched_files: true
