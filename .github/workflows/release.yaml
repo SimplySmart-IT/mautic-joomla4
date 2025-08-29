@@ -10,10 +10,10 @@ jobs:
     steps:
 
       - name: Check out repository code
-        uses: https://github.com/actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: https://github.com/actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
 
@@ -23,7 +23,7 @@ jobs:
 
       - name: Setup PHP
         id: setup-php-tools
-        uses: https://github.com/shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
         env:
@@ -36,7 +36,7 @@ jobs:
 
       - name: package.json info
         id: info-package
-        uses: https://github.com/jaywcjlove/github-action-package@main
+        uses: jaywcjlove/github-action-package@main
 
       - name: Prepare and build package
         id: prepare-package
