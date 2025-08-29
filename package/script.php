@@ -18,7 +18,20 @@ use Joomla\CMS\Language\Text;
 
 class Pkg_MauticForJoomlaInstallerScript extends InstallerScript
 {
+    /**
+     * Minimum PHP version required to install this extension
+     *
+     * @var string
+     * @since 1.0.0
+     */
     protected $minimumPhp    = '8.1.0';
+
+    /**
+     * Minimum Joomla version required to install this extension
+     *
+     * @var string
+     * @since 1.0.0
+     */
     protected $minimumJoomla = '5.0.0';
 
     /**
