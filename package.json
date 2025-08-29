@@ -1,35 +1,36 @@
 {
-  "name": "plg_system_mautic",
+  "name": "pkg_mauticforjoomla",
   "description": "Joomla System Plugin for Mautic",
   "version": "3.0.0",
   "copyright": "Copyright (C) 2014 - 2025 Mautic All Rights Reserved.",
   "config": {
     "build": {
       "extension": "build/tmp",
-      "media": "build/tmp/media",
-      "bannercopyright": "Copyright (C) 2014 - 2024 Mautic All Rights Reserved."
+      "bannercopyright": "Copyright (C) 2014 - 2025 Mautic All Rights Reserved."
     },
     "dev": {
-      "extension": "plg_system_mautic",
-      "media": "plg_system_mautic/media"
+      "extension": [
+        {
+          "name": "plg_system_mautic",
+          "version": "3.0.0",
+          "media": "media"
+        },
+        {
+          "name": "lib_mautic",
+          "version": "3.1.0"
+        }
+      ]
     }
   },
   "devDependencies": {
-    "@atao60/fse-cli": "^0.1.9",
-    "esbuild": "^0.24.2",
-    "esbuild-plugin-compress": "^1.0.1",
-    "eslint": "^9.18.0",
-    "gzipper": "^8.2.0"
+    "esbuild": "^0.25.9",
+    "eslint": "^9.34.0"
   },
   "scripts": {
     "eslint:check": "eslint --no-error-on-unmatched-pattern --config .eslintrc.mjs ./plg_system_mautic/",
     "eslint:fix": "eslint --no-error-on-unmatched-pattern --fix --config .eslintrc.mjs ./plg_system_mautic",
-    "prejs:minify": "fse-cli emptyDir --quiet ./$npm_package_config_build_media/js && fse-cli copy --keepExisting --quiet ./$npm_package_config_dev_media/js ./$npm_package_config_build_media/js",
-    "js:minify": "esbuild ./$npm_package_config_build_media/js/**/*.js --minify --entry-names=[name].min --allow-overwrite --outdir=./$npm_package_config_build_media/js --analyze --color=true",
-    "compile": "npm run js:minify",
-    "banner:js": "esbuild ./$npm_package_config_build_media/js/**/*.js --allow-overwrite --outdir=./$npm_package_config_build_media/js --banner:js=\"// @package     $npm_package_name  v$npm_package_version\n// @copyright   $npm_package_config_build_bannercopyright\n\n\"",
-    "postcompile": "npm run banner:js && gzipper compress ./$npm_package_config_build_media --gzip --verbose --remove-larger --include js,css",
-    "prebuild:prod": "npm i && fse-cli emptyDir --quiet ./$npm_package_config_build_extension && fse-cli copy --quiet ./$npm_package_config_dev_extension ./$npm_package_config_build_extension",
-    "build:prod": "npm run compile"
+    "prebuild:prod": "npm i && cd lib_mautic/src && composer i && npm run clean:build",
+    "build:prod": "node build/SetupPackage.mjs && cd build/tmp && npm pack",
+    "clean:build": "rm -r ./${npm_package_config_build_extension}"
   }
 }
