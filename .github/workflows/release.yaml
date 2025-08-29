@@ -48,9 +48,9 @@ jobs:
         id: release
         uses: softprops/action-gh-release@v2
         with:
-          tag: ${{ github.ref_name }}
-          release_name: "Release of ${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}"
-          body: "Release of ${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}"
-          files: ./build/${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}.zip
+          tag_name: ${{ github.ref_name }}
+          release_name: "Mautic for Joomla package version ${{ steps.info-package.outputs.version }}"
+          body: "Release of Mautic for Joomla package version ${{ steps.info-package.outputs.version }} - ${{ github.ref_name }}"
+          files: ./build/tmp/${{ steps.info-package.outputs.name }}-${{ steps.info-package.outputs.version }}.zip
           draft: true
           fail_on_unmatched_files: true
