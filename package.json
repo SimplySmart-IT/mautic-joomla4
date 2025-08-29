@@ -31,6 +31,6 @@
     "eslint:fix": "eslint --no-error-on-unmatched-pattern --fix --config .eslintrc.mjs ./plg_system_mautic",
     "prebuild:prod": "npm i && cd lib_mautic/src && composer i && npm run clean:build",
     "build:prod": "node build/SetupPackage.mjs && cd build/tmp && npm pack",
-    "clean:build": "rm -r ./${npm_package_config_build_extension}"
+    "clean:build": "if [ -d ./${npm_package_config_build_extension} ]; then rm -r ./${npm_package_config_build_extension}; fi"
   }
 }
