@@ -180,7 +180,7 @@ return new class () implements ServiceProviderInterface {
                         return true;
                     }
 
-                    $this->app->enqueueMessage(Text::sprintf('PLG_SYSTEM_MAUTIC_POSTINSTALL_MSG', $adapter->extension->id));
+                    $this->app->enqueueMessage(Text::sprintf('PLG_SYSTEM_MAUTIC_POSTINSTALL_MSG', $adapter->extension->extension_id));
 
                     return true;
                 }
