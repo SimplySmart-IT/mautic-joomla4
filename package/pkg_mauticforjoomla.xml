@@ -11,10 +11,14 @@
 	<authorUrl>www.mautic.org</authorUrl>
 	<version>3.0.0</version>
 	<files>
-		<file id="lib_mautic" type="library">lib_mautic.zip</file>
-		<file id="plg_system_mautic" type="plugin" group="system">plg_system_mautic.zip</file>
+		<file id="mautic" type="library">lib_mautic.zip</file>
+		<file id="mautic" type="plugin" group="system">plg_system_mautic.zip</file>
 	</files>
 	<scriptfile>script.php</scriptfile>
+	<languages>
+		<language tag="en-GB">language/en-GB/pkg_mauticforjoomla.ini</language>
+		<language tag="en-GB">language/en-GB/pkg_mauticforjoomla.sys.ini</language>
+	</languages>
 	<updateservers>
 		<server type="extension" priority="1" name="Mautic Update Server at GitHub"><![CDATA[https://github.com/mautic/mautic-joomla/update.xml]]></server>
 	</updateservers>
