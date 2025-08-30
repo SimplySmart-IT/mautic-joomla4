@@ -225,9 +225,7 @@ class BumpVersion
     public function usage($command)
     {
         echo PHP_EOL;
-        echo 'Usage: php ' . $command . ' <extensionroot> <version>' . PHP_EOL;
-        echo '<version>: Version (ex: 3.6.0-dev, 3.6.0-beta1, 3.6.0-beta1-dev, 3.6.0-rc1, 3.6.0)' . PHP_EOL;
-        echo '<extensionroot>: ExtensionRootFolder' . PHP_EOL;
+        echo 'Usage: php ' . $command . PHP_EOL;
         echo PHP_EOL;
     }
 }
