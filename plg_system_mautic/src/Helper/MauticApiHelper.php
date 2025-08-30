@@ -108,7 +108,7 @@ class MauticApiHelper
             'version'      => 'OAuth2',
             'clientKey'    => $this->params->get('public_key'),
             'clientSecret' => $this->params->get('secret_key'),
-            'callback'     => Uri::root() . trim($this->params->get('callback_path'), " \t\n\r\0\x0B/"),
+            'callback'     => Uri::root() . trim($this->params->get('callback_path', 'administrator'), " \t\n\r\0\x0B/"),
         ];
 
         if (($token = $this->params->get('token')) && property_exists($token, 'access_token') && $token->access_token) {
