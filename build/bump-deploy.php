@@ -181,9 +181,6 @@ class BumpVersion
             $filePathNorm = '/' . ltrim(str_replace('\\', '/', $filePath), '/');
             $relativePath = '/' . ltrim(substr($filePathNorm, strlen($rootNorm)), '/');
 
-            // Debug: show each scanned file and its relative path
-            echo "BUMP-SCAN: {$filePath} (relative: {$relativePath})\n";
-
             if (preg_match('#\\.(png|jpeg|jpg|gif|bmp|ico|webp|svg|woff|woff2|ttf|eot)$#', $filePath)) {
                 continue;
             }
