@@ -1,9 +1,9 @@
- Mautic for Joomla 4 Package - plugin and library
+Mautic for Joomla Package - plugin and library
 ====================
 
 This [Joomla](http://joomla.org)[^1] Package lets you add the [Mautic](http://mautic.org) tracking via Javascript or gif image for noscript to your Joomla website. With the plugin you can embed forms, dynamic content, tags and gated video support into your Joomla content. If you authorize this plugin as a Mautic API application, it will be able to push data from Joomla registration form to Mautic as a Contact.
 
-**This package is compatible with Joomla 4.x.x. and Mautic 4.x**
+**This package is compatible with Joomla 5.x. and Mautic 5.x**
 
 ### Mautic Tracking
 
@@ -79,9 +79,37 @@ If you want to add more Mautic features, submit PR to this plugin or use this pl
 
 ### Release of the new version
 
-This plugin uses Joomla Update Server which notifies the Joomla admin about availability of new versions of this plugin. To do that, update the version tag in mautic.xml in the master branch and then update version tag at updateserver.xml in the gh-pages branch accordingly.
+This package uses Joomla Update Server which notifies the Joomla admin about availability of new versions of this plugin. To do that, update the version tag in mautic.xml in the master branch and then update version tag at updateserver.xml in the gh-pages branch accordingly.
 
 [Current updateserver.xml](http://mautic.github.io/mautic-joomla/updateserver.xml)
+
+#### Release workflow
+
+Use the local bump-deploy helper to update versions and create a signed git tag, then rely on the GitHub Actions workflow to build and publish the package for the created tag.
+
+Steps (local + CI):
+
+- Update and bump versions locally
+  - Clone the repository 
+  - From the repository root run: php build/bump-deploy.php
+  - The script auto-detects the project root (parent of build/), prompts for the **main package version** and then prompts for **each subpackage version** listed in **package.json -> config.dev.extension.**
+  - For each provided version the script updates the root package.json entry for that subpackage and adjusts any manifest XML <version> tags found in the subpackage (root, admin/ or administrator/). It also updates deploy markers (__DEPLOY_VERSION__) inside files where present.
+  - After the changes it can commit, create a signed tag and push the tag to origin (permissions needed for pushing the tag directly).
+
+- Release build on GitHub (automatic)
+  - The repository contains a workflow at `.github/workflows/release.yaml` that triggers on push of a tag.
+  - When a tag is pushed, the workflow checks out the code, sets up Node and PHP, installs dependencies and runs npm run build:prod.
+  - `build/SetupPackage.mjs` is executed by the build script to prepare temporary per-extension package folders and run `npm pack` for each extension; resulting zip(s) are placed under `build/tmp`.
+  - The workflow then uses softprops/action-gh-release to create a GitHub Release (draft) for the tag and upload the generated installable package zip file (`build/tmp/${npm_package_name}-${npm_package_version}.zip`).
+
+Notes and tips
+
+- Always run the bump script from the project (it expects the build/ folder to be present and will detect the root).
+- The bump script prefers the subpackage src/ folder when applying replacements; if absent it uses the subpackage root.
+- The GitHub workflow expects the packaged artifact to be present at `build/tmp/${npm_package_name}-${npm_package_version}.zip` (created by the build script). 
+  > [!IMPORTANT]
+  > Ensure the versions in `package.json` and manifest files for the package and all subpackage entries are correct before pushing the tag.
+- Tags can be created and either pushed directly from the bump script or pushed manually to trigger the CI release automatically.
 
 ### Integrate Mautic with another extension
 
@@ -117,6 +145,6 @@ More information about Mautic API calls can be found at [Mautic API Library](htt
 
 &#xa0;
 
-[^1]: This package - MauticForJoomla4 - is not affiliated with or endorsed by The Joomla! Project™. It is not supported or warrantied by The Joomla! Project or Open Source Matters, Inc. Use of the Joomla!® name, symbol, logo and related trademarks is permitted under a limited license granted by Open Source Matters, Inc.
+[^1]: This package - MauticForJoomla - is not affiliated with or endorsed by The Joomla! Project™. It is not supported or warrantied by The Joomla! Project or Open Source Matters, Inc. Use of the Joomla!® name, symbol, logo and related trademarks is permitted under a limited license granted by Open Source Matters, Inc.
 
 <a href="#top">Back to top</a>
