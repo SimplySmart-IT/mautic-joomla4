@@ -99,6 +99,15 @@
 					description="PLG_SYSTEM_MAUTIC_TOKEN_DESC"
 				/>
 			</fieldset>
+			<fieldset name="description">
+				<field
+					name="description"
+					type="note"
+					class="w-100"
+					label="PLG_SYSTEM_MAUTIC_XML_DESCRIPTION_LONG_LABEL"
+					description="PLG_SYSTEM_MAUTIC_XML_DESCRIPTION_LONG_DESC"
+				/>
+			</fieldset>
 		</fields>
 	</config>
 </extension>
