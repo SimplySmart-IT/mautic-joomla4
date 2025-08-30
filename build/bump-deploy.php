@@ -273,6 +273,7 @@ $builder->extensionVersion = $bumpVersion;
 $builder->projectRoot = $project;
 
 fc_echo('Running bump for ' . $builder->extensionRoot . ' -> ' . $bumpVersion, FC_BLUE_INLINE);
+echo PHP_EOL;
 $builder->bump();
 
 // Handle sub-packages defined in root package.json config.dev.extension
@@ -302,22 +303,23 @@ if (is_file($rootPkgPath)) {
                 }
             }
 
-            $extVersion = prompt('Enter version for ' . $extName . ' (leave empty to skip)', $currentExtVersion);
+            $extVersion = prompt('Enter version for ' . $extName, $currentExtVersion);
             if ($extVersion === '') {
                 echo PHP_EOL;
-                fc_echo('Skipping ' . $extName, FC_YELLOW_INLINE);
+                fc_echo('Skipping (version empty) ' . $extName, FC_YELLOW_INLINE);
                 echo PHP_EOL;
                 continue;
             }
 
             fc_echo('Running bump for ' . $extName . ' to version ' . $extVersion, FC_BLUE_INLINE);
+            echo PHP_EOL;
 
             // update version in root package.json config.dev.extension
             if (isset($rootPkg) && is_array($rootPkg) && !empty($rootPkg['config']['dev']['extension'])) {
                 foreach ($rootPkg['config']['dev']['extension'] as &$entry) {
                     if (isset($entry['name']) && $entry['name'] === $extName) {
                         $entry['version'] = $extVersion;
-                        echo '- Version in ' . $rootPkgPath . ' for ' . $extName . ' updated to ' . $extVersion . PHP_EOL;
+                        echo '- Version for ' . $extName . ' updated to ' . $extVersion . PHP_EOL;
                         break;
                     }
                 }
@@ -351,10 +353,10 @@ if (is_file($rootPkgPath)) {
                             $newContents = preg_replace('#<version>[^<]*</version>#', '<version>' . $extVersion . '</version>', $contents, 1);
                             if ($newContents !== $contents) {
                                 file_put_contents($filePath, $newContents);
-                                echo '- Version in Manifest for ' . $extName . ' updated to ' . $extVersion . ' (' . $filePath . ')' . PHP_EOL;
+                                echo '- Version in Manifest for ' . $extName . ' updated to ' . $extVersion . PHP_EOL;
                                 $manifestUpdated = true;
                             } else {
-                                echo 'Manifest for ' . $extName . ' already has version ' . $extVersion . ': ' . $filePath . PHP_EOL;
+                                echo '- Manifest for ' . $extName . ' already has version ' . $extVersion . PHP_EOL;
                             }
                             break 2; // stop both loops after first manifest found
                         }
@@ -363,7 +365,9 @@ if (is_file($rootPkgPath)) {
             }
 
             if (! $manifestFound) {
+                echo PHP_EOL;
                 fc_echo('No manifest XML with <version> found in typical locations for ' . $extName, FC_YELLOW_INLINE);
+                echo PHP_EOL;
             }
 
             // Run bump for subpackage (prefer src folder)
@@ -374,11 +378,11 @@ if (is_file($rootPkgPath)) {
             $extBuilder->extensionRoot = $runRoot;
             $extBuilder->extensionVersion = $extVersion;
             $extBuilder->projectRoot = $project;
-            fc_echo('Running recursive bump for subpackage root: ' . $runRoot, FC_BLUE_INLINE);
+            echo '- Running recursive bump for subpackage ' . $extName . PHP_EOL;
             $extBuilder->bump();
 
             echo '-> Version bump for ' . $extName . ' complete!' . PHP_EOL;
-            echo PHP_EOL . PHP_EOL;
+            echo PHP_EOL;
         }
     }
 }
