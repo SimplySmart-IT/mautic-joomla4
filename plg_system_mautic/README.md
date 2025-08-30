@@ -54,7 +54,7 @@ To embed the ability to append Mautic Tags to a contact on a page load, insert t
 
     {mautic type="tags" tags="tag1,tag2,-removetag"}
 
-You can add or remove one or multiple lead tags on specific pages using commas. For removing a tag you can use "-" sign before tag anme.
+You can add or remove one or multiple lead tags on specific pages using commas. For removing a tag you can use "-" sign before tag name.
 
 ### Plugin authorization
 
