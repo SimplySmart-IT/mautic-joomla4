@@ -16,7 +16,6 @@
 	</files>
 	<scriptfile>script.php</scriptfile>
 	<updateservers>
-	<!-- TODO Change url to mautic/mautic-joomla main or another branch ?!! -->
-		<server type="extension" priority="1" name="Mautic Update Server at GitHub"><![CDATA[https://github.com/mautic/mautic-joomla4/update.xml]]></server>
+		<server type="extension" priority="1" name="Mautic Update Server at GitHub"><![CDATA[https://github.com/mautic/mautic-joomla/update.xml]]></server>
 	</updateservers>
 </extension>
