@@ -16,7 +16,7 @@
 			
 
 			function generateToken() {
-				// task is a hidden field in the foot of the form			
+				// task is a hidden field in the foot of the form
 				task_id.value = 'plugin.apply';
 				genToken.value = '1';
 			}	
@@ -24,14 +24,9 @@
 			function clearToken() {
 				var inputs = adminform.querySelectorAll('input[name^="jform[params][token]"');
 				inputs.forEach((input) => {
-					input.value = '';
-				});
-				var textareas = adminform.querySelectorAll('textarea[name^="jform[params][token]"');
-				textareas.forEach((textarea) => {
 					// never clear the refresh token
-					if (textarea.name !== 'jform[params][token][refresh_token]') {
-						textarea.value = '';
-						textarea.textContent = '';
+					if (input.name !== 'jform[params][token][refresh_token]') {
+						input.value = '';
 					}
 				});
 				task_id.value = 'plugin.apply';
@@ -41,7 +36,7 @@
 			btnGenToken.addEventListener('click', generateToken);
 			if (btnClearToken) {
 				btnClearToken.addEventListener('click', clearToken);
-			}		
+			}
 
 			document.removeEventListener('DOMContentLoaded', sismos_token);
 		}

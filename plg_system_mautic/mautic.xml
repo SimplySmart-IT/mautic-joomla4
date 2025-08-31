@@ -94,7 +94,6 @@
 					type="Token" 
 					default="" 
 					readonly="true"
-					parentclass="stack span-2"
 					label="PLG_SYSTEM_MAUTIC_TOKEN_LABEL" 
 					description="PLG_SYSTEM_MAUTIC_TOKEN_DESC"
 				/>
