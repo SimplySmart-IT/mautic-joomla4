@@ -225,6 +225,8 @@ final class Mautic extends CMSPlugin
      * @param array $atts
      *
      * @return string
+     * 
+     * @deprecated Will be removed without replacement as this feature is no longer supported and removed from Mautic 6.x 
      */
     public function doVideoShortcode($atts)
     {
