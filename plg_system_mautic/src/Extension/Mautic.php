@@ -226,7 +226,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      *
      * @return string
      */
-    public function doFormShortcode($atts)
+    protected function doFormShortcode($atts)
     {
 
         $id = isset($atts['id']) ? $atts['id'] : $atts[0];
@@ -242,7 +242,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      *
      * @return string
      */
-    public function doContentShortcode($atts, $content)
+    protected function doContentShortcode($atts, $content)
     {
         return '<div class="mautic-slot" data-slot-name="' . $atts['slot'] . '">' . $content . '</div>';
     }
@@ -256,7 +256,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      * 
      * @deprecated Will be removed without replacement as this feature is no longer supported and removed from Mautic 6.x 
      */
-    public function doVideoShortcode($atts)
+    protected function doVideoShortcode($atts)
     {
         $video_type = '';
         $atts       = $this->filterAtts([
@@ -302,7 +302,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      *
      * @return string
      */
-    public function doTagsShortcode($atts)
+    protected function doTagsShortcode($atts)
     {
         if (!$this->params->get('base_url', '')) {
             return '';
