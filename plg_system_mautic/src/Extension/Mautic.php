@@ -18,6 +18,7 @@ namespace Mautic\Plugin\System\Mautic\Extension;
 // phpcs:enable PSR1.Files.SideEffects
 
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -29,13 +30,15 @@ use Joomla\Event\DispatcherInterface;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Mautic\Plugin\System\Mautic\Helper\MauticApiHelper;
+use Joomla\Event\SubscriberInterface;
+use Joomla\CMS\Event\Model;
 
 /**
  *
  * @package     Mautic-Joomla.Plugin
  * @subpackage  System.Mautic
  */
-final class Mautic extends CMSPlugin
+final class Mautic extends CMSPlugin implements SubscriberInterface
 {
     /**
      * Application object
@@ -82,14 +85,39 @@ final class Mautic extends CMSPlugin
      *
      * @since   3.0.0
      */
-    public function __construct(
-        DispatcherInterface $dispatcher,
-        array $config
-    ) {
+    public function __construct(DispatcherInterface $dispatcher, array $config = []) 
+    {
         parent::__construct($dispatcher, $config);
 
         // Define the logger.
         Log::addLogger(['text_file' => 'plg_system_mautic.php'], Log::ALL, ['plg_system_mautic']);
+    }
+
+    /**
+     * Get the subscribed events for the plugin.
+     *
+     * @return string[]
+     *
+     * @since 3.0.0
+     *
+     * @throws Exception
+     */
+    public static function getSubscribedEvents(): array
+    {
+        // TODO map own events
+        $app = Factory::getApplication();
+
+        $mapping  = [];
+
+        // Only allowed in the backend
+        if ($app->isClient('administrator')) {
+            $mapping['onExtensionBeforeSave'] = 'onExtensionBeforeSave';
+        } else {
+            $mapping['onBeforeCompileHead']   = 'onBeforeCompileHead';
+            $mapping['onContentPrepare']   = 'onContentPrepare';
+        }
+
+        return $mapping;
     }
 
     /**
@@ -149,15 +177,15 @@ final class Mautic extends CMSPlugin
     /**
      * Insert form script to the content
      *
-     * @param   string  $context The context of the content being passed to the plugin.
-     * @param   object  $article The article object.  Note $article->text is also available
-     * @param   object  $params  The article params
-     * @param   integer $page    The 'page' number
+     * @param   ContentPrepareEvent $event  The event instance.
      *
      * @return  void
      */
-    public function onContentPrepare($context, &$article, &$params, $page = 0)
+    public function onContentPrepare(ContentPrepareEvent $event)
     {
+        $context = $event->getContext();
+        $article     = $event->getItem();
+
         // Check to make sure we are loading an HTML view and there is a main component area and content is not being indexed
         if (
             $this->app->getDocument()->getType() !== 'html'
@@ -289,22 +317,22 @@ final class Mautic extends CMSPlugin
      * Clear all Data from token when keys change.
      * This method acts on table save, checks old data and clears the token data if the keys have changed.
      *
-     * @param   string             $context      The context
-     * @param   \Joomla\CMS\Table  $table        The table
-     * @param   boolean            $isNew        Is new item
-     * @param   mixed              $extension    The extension
+     * @param   Model\SaveEvent  $event The onExtensionBeforeSave event.
      *
      * @return void
      *
      * @since 3.0.0
      */
-    public function onExtensionBeforeSave($context, $table, $isNew, $extension = null): void
+    public function onExtensionBeforeSave(Model\SaveEvent $event): void
     {
-        if ($context !== 'com_plugins.plugin' || $table->element !== 'mautic') {
+        $context   = $event->getContext();
+        $extension = $event->getItem();
+
+        if ($context !== 'com_plugins.plugin' || $extension->element !== 'mautic') {
             return;
         }
 
-        $newParams = new Registry($table->get('params'));
+        $newParams = new Registry($extension->get('params'));
         $tokenData = $newParams->get('token', null);
 
         if (
@@ -315,8 +343,8 @@ final class Mautic extends CMSPlugin
             foreach ($tokenData as $key => &$data) {
                 $data = "";
             }
-            $newParams->set('token', ArrayHelper::toObject(['token' => $tokenData]));
-            $table->set('params', $newParams->toString());
+            $newParams->token = ArrayHelper::toObject(['token' => $tokenData]);
+            $extension->set('params', $newParams->toString());
         }
     }
 
