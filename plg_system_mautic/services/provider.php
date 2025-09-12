@@ -35,10 +35,11 @@ return new class () implements ServiceProviderInterface {
         $container->set(
             PluginInterface::class,
             function (Container $container) {
-                $plugin     = new Mautic(
-                    $container->get(DispatcherInterface::class),
-                    (array) PluginHelper::getPlugin('system', 'mautic')
-                );
+
+                $plugin     = PluginHelper::getPlugin('system', 'mautic');
+                $dispatcher = $container->get(DispatcherInterface::class);
+
+                $plugin = new Mautic($dispatcher, (array) $plugin);
                 $plugin->setApplication(Factory::getApplication());
                 // $plugin->setDatabase($container->get(DatabaseInterface::class));
 
