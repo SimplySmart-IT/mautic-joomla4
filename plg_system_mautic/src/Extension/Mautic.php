@@ -33,6 +33,7 @@ use Mautic\Plugin\System\Mautic\Helper\MauticApiHelper;
 use Joomla\Event\SubscriberInterface;
 use Joomla\CMS\Event\Model;
 use Mautic\Plugin\System\Mautic\Features\PrepareContentTrait;
+use Mautic\Plugin\System\Mautic\Features\TokenTrait;
 
 /**
  *
@@ -41,9 +42,10 @@ use Mautic\Plugin\System\Mautic\Features\PrepareContentTrait;
  */
 final class Mautic extends CMSPlugin implements SubscriberInterface
 {
-    use PrepareContentTrait
+    use PrepareContentTrait, TokenTrait
     {
         PrepareContentTrait::onContentPrepare as protected onContentPrepare_PrepareContentTrait;
+        TokenTrait::onExtensionBeforeSave as protected onExtensionBeforeSave_TokenTrait;
     }
     use DatabaseAwareTrait;
 
@@ -196,27 +198,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      */
     public function onExtensionBeforeSave(Model\SaveEvent $event): void
     {
-        $context   = $event->getContext();
-        $extension = $event->getItem();
-
-        if ($context !== 'com_plugins.plugin' || $extension->element !== 'mautic') {
-            return;
-        }
-
-        $newParams = new Registry($extension->get('params'));
-        $tokenData = $newParams->get('token', null);
-
-        if (
-            $tokenData && (!isset($this->params) || ($this->params->get('public_key', '') !== $newParams->get('public_key', '')
-            || $this->params->get('private_key', '') !== $newParams->get('private_key', '')))
-        ) {
-            $tokenData = ArrayHelper::fromObject($newParams->get('token', []));
-            foreach ($tokenData as $key => &$data) {
-                $data = "";
-            }
-            $newParams->token = ArrayHelper::toObject(['token' => $tokenData]);
-            $extension->set('params', $newParams->toString());
-        }
+        $this->onExtensionBeforeSave_TokenTrait($event);
     }
 
     /**

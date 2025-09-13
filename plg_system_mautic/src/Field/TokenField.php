@@ -161,11 +161,11 @@ XML;
 	protected function getInput()
 	{
 
-		$apiHelper = new MauticApiHelper();
-		$settings  = $apiHelper->getApiSettings();
-		$text      = (!empty($settings['accessToken'])) ? 'PLG_SYSTEM_MAUTIC_TOKEN_REAUTHORIZE_ACTION' : 'PLG_SYSTEM_MAUTIC_TOKEN_ACTION';
+		$form = $this->form;
+		$formData = $form->getData()->toObject();
+		$text      = (!empty($this->value->access_token)) ? 'PLG_SYSTEM_MAUTIC_TOKEN_REAUTHORIZE_ACTION' : 'PLG_SYSTEM_MAUTIC_TOKEN_ACTION';
 
-		if (!empty($settings['clientKey']) && !empty($settings['clientSecret'])) {
+		if ($formData && !empty($formData->params->public_key) && !empty($formData->params->secret_key)) {
 			/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 			$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 			$wa->registerAndUseScript('plg_system_mautic.token', 'plg_system_mautic/sismos_token.js');
@@ -173,10 +173,9 @@ XML;
 			$input = '<div class="d-flex my-3">';
 			$btn   = '<button type="submit" id ="genToken" class="btn btn-success me-3">' . Text::_($text) . '</button>';
 
-			if (!empty($settings['accessToken'])) {
+			if (!empty($this->value->access_token)) {
 				$btn .= '<button type="submit" id ="clearToken" class="btn btn-danger">' . Text::_('PLG_SYSTEM_MAUTIC_TOKEN_CLEAR_ACTION') . '</button>';
 			}
-
 
 			$input .= $btn;
 			$input .= '</div>';
