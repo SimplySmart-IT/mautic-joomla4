@@ -40,8 +40,9 @@ return new class () implements ServiceProviderInterface {
                 $dispatcher = $container->get(DispatcherInterface::class);
 
                 $plugin = new Mautic($dispatcher, (array) $plugin);
+
                 $plugin->setApplication(Factory::getApplication());
-                // $plugin->setDatabase($container->get(DatabaseInterface::class));
+                $plugin->setDatabase($container->get(DatabaseInterface::class));
 
                 return $plugin;
             }

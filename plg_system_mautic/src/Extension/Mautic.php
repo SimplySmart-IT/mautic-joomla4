@@ -40,6 +40,8 @@ use Joomla\CMS\Event\Model;
  */
 final class Mautic extends CMSPlugin implements SubscriberInterface
 {
+    use DatabaseAwareTrait;
+
     /**
      * Application object
      *
