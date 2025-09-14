@@ -250,58 +250,6 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
     }
 
     /**
-    * Mautic API call
-    *
-    * @since 3.0.0
-    */
-    public function onAfterRoute()
-    {
-        if (!Factory::getApplication()->isClient('administrator')) {
-            return;
-        }
-
-        $isRoot = Factory::getApplication()->getIdentity()->authorise('core.admin');
-
-        if (!Factory::getApplication()->getUserState('mauticapi.data.oauth_gentoken', 0)) {
-            return;
-        }
-
-        if ($isRoot) {
-            $input = Factory::getApplication()->getInput();
-            if (
-                ($input->get('oauth_token') && $input->get('oauth_verifier'))
-                || ($input->get('state') && $input->get('code'))
-            ) {
-                $this->authorize($input->get('reauthorize', false, 'BOOLEAN')); // TODO
-                $plugin = PluginHelper::getPlugin('system', 'mautic');
-                $url    = Uri::root() . 'administrator/index.php?option=com_plugins&task=plugin.edit&extension_id=' . $plugin->id;
-                Factory::getApplication()->redirect($url, (int) 303);
-            }
-        } else {
-            Factory::getApplication()->enqueueMessage(Text::_('PLG_SYSTEM_MAUTIC_ERROR_ONLY_ADMIN_CAN_AUTHORIZE'), 'warning');
-            $this->log('Only admins can authorise Mautic API connections.', Log::ERROR);
-        }
-    }
-
-    /**
-     * Create sanitized Mautic Base URL without the slash at the end.
-     *
-     *  @param \Joomla\CMS\Table\Table|null $table
-     *
-     * @return Mautic\Plugin\System\Mautic\Helper\MauticApiHelper
-     */
-    public function getMauticApiHelper($table = null)
-    {
-        if ($this->apiHelper) {
-            return $this->apiHelper;
-        }
-
-        $this->apiHelper = new MauticApiHelper($table);
-
-        return $this->apiHelper;
-    }
-
-    /**
      * Get Table instance of this plugin
      *
      * @return JTableExtension
