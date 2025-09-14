@@ -206,13 +206,8 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
 
         $plugin = PluginHelper::getPlugin('system', 'mautic');
 
-        if ($this instanceof TokenTrait) {
-            // @todo session
+        // Authenticate with OAuth2 - get access token - TokenTrait
         $this->OAuth2Authenticate();
-        } else {
-            // @todo throw error ???
-            $this->log('TokenTrait not found in Mautic plugin.', Log::ERROR);
-        }
 
         $url = Uri::root() . 'administrator/index.php?option=com_plugins&task=plugin.edit&extension_id=' . $plugin->id;
 
