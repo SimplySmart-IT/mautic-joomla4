@@ -13,9 +13,7 @@
 namespace Mautic\Plugin\System\Mautic\Extension;
 
 // no direct access
-// phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die('Restricted access');
-// phpcs:enable PSR1.Files.SideEffects
 
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
