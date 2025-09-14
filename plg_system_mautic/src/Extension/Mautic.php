@@ -30,6 +30,7 @@ use Joomla\Utilities\ArrayHelper;
 use Mautic\Plugin\System\Mautic\Helper\MauticApiHelper;
 use Joomla\Event\SubscriberInterface;
 use Joomla\CMS\Event\Model;
+use Joomla\CMS\Event\Plugin\AjaxEvent;
 use Joomla\Database\DatabaseAwareTrait;
 use Mautic\Plugin\System\Mautic\Features\OAuth2Client;
 use Mautic\Plugin\System\Mautic\Features\PrepareContentTrait;
@@ -108,6 +109,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
         if ($app->isClient('administrator')) {
             $mapping['onExtensionBeforeSave'] = 'onExtensionBeforeSave';
         } else {
+            $mapping['onAjaxMautic']   = 'onAjaxMautic';
             $mapping['onBeforeCompileHead']   = 'onBeforeCompileHead';
             $mapping['onContentPrepare']   = 'onContentPrepare';
         }
@@ -185,6 +187,29 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      * Ajax call for Mautic.
      *
      * @param   AjaxEvent  $event  The event object
+     *
+     * @return  void
+     *
+     * @since 3.0.0
+     */
+    public function onAjaxMautic(AjaxEvent $event)
+    {
+        $app = $event->getApplication();
+
+        $code = $app->getInput()->get('code', false, 'raw');
+
+        if (!$code) {
+            return;
+        }
+
+        $plugin = PluginHelper::getPlugin('system', 'mautic');
+
+        $this->OAuth2Authenticate();
+
+        $url = Uri::root() . 'administrator/index.php?option=com_plugins&task=plugin.edit&extension_id=' . $plugin->id;
+
+        $this->app->redirect($url, (int) 303);
+    }
 
     /**
      * Clear all Data from token when keys change.
