@@ -31,7 +31,7 @@ class OAuth2Client extends Client
      * @param   Input                    $input        The input object
      * @param   WebApplicationInterface  $application  The application object
      *
-     * @since   1.0
+     * @since   3.0.0
      */
     public function __construct($options = [], Http $http = null, Input $input = null, WebApplicationInterface $application = null)
     {
