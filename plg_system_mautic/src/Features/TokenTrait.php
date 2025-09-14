@@ -17,6 +17,8 @@ namespace Mautic\Plugin\System\Mautic\Features;
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Event\Model;
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Feature: Token Handling
