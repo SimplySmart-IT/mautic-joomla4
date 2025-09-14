@@ -32,6 +32,7 @@ use Joomla\Utilities\ArrayHelper;
 use Mautic\Plugin\System\Mautic\Helper\MauticApiHelper;
 use Joomla\Event\SubscriberInterface;
 use Joomla\CMS\Event\Model;
+use Mautic\Plugin\System\Mautic\Features\OAuth2Client;
 use Mautic\Plugin\System\Mautic\Features\PrepareContentTrait;
 use Mautic\Plugin\System\Mautic\Features\TokenTrait;
 
