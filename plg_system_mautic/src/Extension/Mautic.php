@@ -249,45 +249,45 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      *
      * @return JTableExtension
      */
-    public function authorize($reauthorize = false)
-    {
-        $apiHelper      = $this->getMauticApiHelper();
-        $auth           = $apiHelper->getMauticAuth($reauthorize);
-        $lang           = $this->app->getLanguage();
-        $table          = $apiHelper->getTable();
+    // public function authorize($reauthorize = false)
+    // {
+    //     $apiHelper      = $this->getMauticApiHelper();
+    //     $auth           = $apiHelper->getMauticAuth($reauthorize);
+    //     $lang           = $this->app->getLanguage();
+    //     $table          = $apiHelper->getTable();
 
-        $lang->load('plg_system_mautic', JPATH_ADMINISTRATOR);
+    //     $lang->load('plg_system_mautic', JPATH_ADMINISTRATOR);
 
-        $this->log('Authorize method called.', Log::INFO);
+    //     $this->log('Authorize method called.', Log::INFO);
 
-        try {
-            if ($auth->validateAccessToken()) {
-                if ($auth->accessTokenUpdated()) {
-                    $accessTokenData         = new Registry(['token' => array_merge($auth->getAccessTokenData(), ['created' => Factory::getDate()->toSql()])]);
-                    $logTokenData            = clone $accessTokenData;
-                    $logToken                = $logTokenData->get('token');
-                    $logToken->access_token  = '**(hidden)**';
-                    $logToken->refresh_token = '**(hidden)**';
-                    $logTokenData->set('token', $logToken);
-                    $this->log('authorize::accessTokenData: ' . var_export($logTokenData, true), Log::INFO);
+    //     try {
+    //         if ($auth->validateAccessToken()) {
+    //             if ($auth->accessTokenUpdated()) {
+    //                 $accessTokenData         = new Registry(['token' => array_merge($auth->getAccessTokenData(), ['created' => Factory::getDate()->toSql()])]);
+    //                 $logTokenData            = clone $accessTokenData;
+    //                 $logToken                = $logTokenData->get('token');
+    //                 $logToken->access_token  = '**(hidden)**';
+    //                 $logToken->refresh_token = '**(hidden)**';
+    //                 $logTokenData->set('token', $logToken);
+    //                 $this->log('authorize::accessTokenData: ' . var_export($logTokenData, true), Log::INFO);
 
-                    $this->params->merge($accessTokenData);
-                    $table->set('params', $this->params->toString());
-                    $table->store();
-                    $extraWord = $reauthorize ? 'PLG_SYSTEM_MAUTIC_REAUTHORIZED' : 'PLG_SYSTEM_MAUTIC_AUTHORIZED';
-                    $this->app->enqueueMessage(Text::sprintf('PLG_SYSTEM_MAUTIC_REAUTHORIZE_SUCCESS', Text::_($extraWord)));
-                } else {
-                    $this->app->enqueueMessage(Text::_('PLG_SYSTEM_MAUTIC_REAUTHORIZE_NOT_NEEDED'));
-                    $this->log('Mautic plugin does not need to authorise, it already is authorised.', Log::INFO);
-                }
-            }
-        } catch (\Exception $e) {
-            $this->app->enqueueMessage($e->getMessage(), 'error');
-            $this->log($e->getMessage(), Log::ERROR);
-        }
+    //                 $this->params->merge($accessTokenData);
+    //                 $table->set('params', $this->params->toString());
+    //                 $table->store();
+    //                 $extraWord = $reauthorize ? 'PLG_SYSTEM_MAUTIC_REAUTHORIZED' : 'PLG_SYSTEM_MAUTIC_AUTHORIZED';
+    //                 $this->app->enqueueMessage(Text::sprintf('PLG_SYSTEM_MAUTIC_REAUTHORIZE_SUCCESS', Text::_($extraWord)));
+    //             } else {
+    //                 $this->app->enqueueMessage(Text::_('PLG_SYSTEM_MAUTIC_REAUTHORIZE_NOT_NEEDED'));
+    //                 $this->log('Mautic plugin does not need to authorise, it already is authorised.', Log::INFO);
+    //             }
+    //         }
+    //     } catch (\Exception $e) {
+    //         $this->app->enqueueMessage($e->getMessage(), 'error');
+    //         $this->log($e->getMessage(), Log::ERROR);
+    //     }
 
-        $this->app->redirect(Route::_('index.php?option=com_plugins&view=plugin&layout=edit&extension_id=' . $table->get('extension_id'), false));
-    }
+    //     $this->app->redirect(Route::_('index.php?option=com_plugins&view=plugin&layout=edit&extension_id=' . $table->get('extension_id'), false));
+    // }
 
     /**
      * Create new lead on Joomla user registration
