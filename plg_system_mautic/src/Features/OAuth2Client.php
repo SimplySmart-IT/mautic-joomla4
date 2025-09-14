@@ -52,12 +52,14 @@ class OAuth2Client extends Client
      */
     public function authenticate()
     {
-        if ($data['code'] = $this->input->get('code', false, 'raw')) {
+        $code = $this->input->get('code', false, 'raw');
+        if ($code) {
             $data = [
                 'grant_type'    => 'authorization_code',
                 'redirect_uri'  => $this->getOption('redirecturi'),
                 'client_id'     => $this->getOption('clientid'),
                 'client_secret' => $this->getOption('clientsecret'),
+                'code'          => $code
             ];
 
             $response = $this->http->post($this->getOption('tokenurl'), $data);
