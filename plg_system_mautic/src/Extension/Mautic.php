@@ -109,11 +109,11 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
         // Only allowed in the backend
         if ($app->isClient('administrator')) {
             $mapping['onExtensionBeforeSave'] = 'onExtensionBeforeSave';
-            $mapping['onExtensionAfterSave'] = 'onExtensionAfterSave';
+            $mapping['onExtensionAfterSave']  = 'onExtensionAfterSave';
         } else {
-            $mapping['onAjaxMautic']   = 'onAjaxMautic';
+            $mapping['onAjaxMautic']          = 'onAjaxMautic';
             $mapping['onBeforeCompileHead']   = 'onBeforeCompileHead';
-            $mapping['onContentPrepare']   = 'onContentPrepare';
+            $mapping['onContentPrepare']      = 'onContentPrepare';
         }
 
         return $mapping;
