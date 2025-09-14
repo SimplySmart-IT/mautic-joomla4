@@ -47,6 +47,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
     {
         PrepareContentTrait::onContentPrepare as protected onContentPrepare_PrepareContentTrait;
         TokenTrait::onExtensionBeforeSave as protected onExtensionBeforeSave_TokenTrait;
+        TokenTrait::onExtensionAfterSave as protected onExtensionAfterSave_TokenTrait;
     }
     use DatabaseAwareTrait;
 
@@ -108,6 +109,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
         // Only allowed in the backend
         if ($app->isClient('administrator')) {
             $mapping['onExtensionBeforeSave'] = 'onExtensionBeforeSave';
+            $mapping['onExtensionAfterSave'] = 'onExtensionAfterSave';
         } else {
             $mapping['onAjaxMautic']   = 'onAjaxMautic';
             $mapping['onBeforeCompileHead']   = 'onBeforeCompileHead';
@@ -204,7 +206,13 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
 
         $plugin = PluginHelper::getPlugin('system', 'mautic');
 
+        if ($this instanceof TokenTrait) {
+            // @todo session
         $this->OAuth2Authenticate();
+        } else {
+            // @todo throw error ???
+            $this->log('TokenTrait not found in Mautic plugin.', Log::ERROR);
+        }
 
         $url = Uri::root() . 'administrator/index.php?option=com_plugins&task=plugin.edit&extension_id=' . $plugin->id;
 
@@ -230,46 +238,15 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      * Generate a token for Mautic oAuth.
      * This method acts on table save, when a token doesn't already exist or a reset is required.
      *
-     * @param   string             $context      The context
-     * @param   \Joomla\CMS\Table  $table        The table
-     * @param   boolean            $isNew        Is new item
-     * @param   mixed              $extension    The extension
+     * @param   Model\SaveEvent  $event The onExtensionBeforeSave event.
      *
      * @return void
      *
      * @since 3.0.0
      */
-    public function onExtensionAfterSave($context, $table, $isNew, $extension = null): void
+    public function onExtensionAfterSave(Model\SaveEvent $event): void
     {
-        if ($context !== 'com_plugins.plugin' || $table->element !== 'mautic') {
-            return;
-        }
-
-        if (\is_null($extension)) {
-            return;
-        }
-
-        //get gentoken value and check
-        if (Factory::getApplication()->getInput()->get('gentoken', null, 'int')) {
-            $isRoot = $this->app->getIdentity()->authorise('core.admin');
-            if ($isRoot) {
-                if (
-                    !\array_key_exists('public_key', $extension['params']) || !$extension['params']['public_key'] ||
-                    !\array_key_exists('secret_key', $extension['params']) || !$extension['params']['secret_key']
-                ) {
-                    $this->app->enqueueMessage(Text::_('PLG_SYSTEM_MAUTIC_AUTH_MISSING_DATA_ERROR'), 'warning');
-                    $this->log('Client-id and/or client-secret missing.', Log::ERROR);
-                    return;
-                }
-
-                $this->apiHelper = new MauticApiHelper($table);
-
-                $this->authorize(true); // TODO
-            } else {
-                $this->app->enqueueMessage(Text::_('PLG_SYSTEM_MAUTIC_ERROR_ONLY_ADMIN_CAN_AUTHORIZE'), 'warning');
-                $this->log('Only admins can authorise Mautic API connections.', Log::ERROR);
-            }
-        }
+        $this->onExtensionAfterSave_TokenTrait($event);
     }
 
     /**
