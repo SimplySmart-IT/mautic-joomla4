@@ -48,7 +48,7 @@ trait PrepareContentTrait
      */
     public function onContentPrepare(ContentPrepareEvent $event)
     {
-        $context = $event->getContext();
+        $context     = $event->getContext();
         $article     = $event->getItem();
 
         // Check to make sure we are loading an HTML view and there is a main component area and content is not being indexed
@@ -77,7 +77,8 @@ trait PrepareContentTrait
      *
      * @since 3.0.0
      */
-    protected function prepareContent(string $text): string {
+    protected function prepareContent(string $text): string
+    {
         // Replace {mauticform with {mautic type="form"
         $text = str_replace('{mauticform', '{mautic type="form"', $text);
 
@@ -132,8 +133,8 @@ trait PrepareContentTrait
      * @param array $atts
      *
      * @return string
-     * 
-     * @deprecated Will be removed without replacement as this feature is no longer supported and removed from Mautic 6.x 
+     *
+     * @deprecated Will be removed without replacement as this feature is no longer supported and removed from Mautic 6.x
      */
     protected function doVideoShortcode($atts)
     {

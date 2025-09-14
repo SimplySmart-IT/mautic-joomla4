@@ -12,7 +12,6 @@
 
 namespace Mautic\Plugin\System\Mautic\Features;
 
-
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
 
@@ -36,7 +35,6 @@ use Mautic\Plugin\System\Mautic\Features\OAuth2Client;
  */
 trait TokenTrait
 {
-
     /**
      * Clear all Data from token when keys change.
      * This method acts on table save, checks old data and clears the token data if the keys have changed.
@@ -136,7 +134,7 @@ trait TokenTrait
 
         if (!$baseUrl) {
             // $this->log('Base URL missing.', Log::ERROR); @todo
-            \throwException(new \Exception(Text::_('PLG_SYSTEM_MAUTIC_AUTH_MISSING_DATA_ERROR')));
+            throwException(new \Exception(Text::_('PLG_SYSTEM_MAUTIC_AUTH_MISSING_DATA_ERROR')));
             return;
         }
 
@@ -221,28 +219,32 @@ trait TokenTrait
     /**
      * Get the database connection.
      */
-    private function getDB() {
+    private function getDB()
+    {
         return $this instanceof DatabaseAwareTrait ? $this->getDatabase() : Factory::getContainer()->get(DatabaseInterface::class);
     }
 
     /**
      * Get the application instance.
      */
-    private function getApp() {
+    private function getApp()
+    {
         return $this->app ?? Factory::getApplication();
     }
 
     /**
      * Get the parameters.
      */
-    private function getParams() {
+    private function getParams()
+    {
         return $this->params ?? new Registry();
     }
 
     /**
      * Get the baseUrl for OAuth2
      */
-    private function getBaseUrl() {
+    private function getBaseUrl()
+    {
         $baseUrl = $this->getParams()->get('base_url', '');
         return $baseUrl ? trim($baseUrl, " \t\n\r\0\x0B/") : '';
     }

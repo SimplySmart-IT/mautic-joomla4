@@ -19,7 +19,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use Joomla\Utilities\ArrayHelper;
 
 /**
  * Installer service provider of MauticForJoomla Package.
@@ -27,7 +26,6 @@ use Joomla\Utilities\ArrayHelper;
  * @since  1.0.0
  */
 return new class () implements ServiceProviderInterface {
-
     /**
      * Registers the service provider with a DI container.
      *
@@ -44,7 +42,6 @@ return new class () implements ServiceProviderInterface {
             new class (
                 $container->get(AdministratorApplication::class)
             ) implements InstallerScriptInterface {
-
                 /**
                  * Minimum Joomla version to check
                  *

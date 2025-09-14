@@ -18,7 +18,6 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\SubformField;
 use Joomla\CMS\Language\Text;
-use Mautic\Plugin\System\Mautic\Helper\MauticApiHelper;
 use SimpleXMLElement;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -32,62 +31,62 @@ use SimpleXMLElement;
  */
 class TokenField extends SubformField
 {
-	/**
-	 * The form field type.
-	 * @var    string
-	 */
-	protected $type = 'Token';
+    /**
+     * The form field type.
+     * @var    string
+     */
+    protected $type = 'Token';
 
-	/**
-	 * Method to attach a Form object to the field.
-	 *
-	 * @param   \SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
-	 * @param   mixed              $value    The form field value to validate.
-	 * @param   string             $group    The field name group control value.
-	 *
-	 * @return  boolean  True on success.
-	 *
-	 * @since   2.0.0
-	 */
-	public function setup(\SimpleXMLElement $element, $value, $group = null)
-	{
-		/**
-		 * When you have subforms which are not repeatable (i.e. a subform custom field with the
-		 * repeat attribute set to 0) you get an array here since the data comes from decoding the
-		 * JSON into an associative array, including the media subfield's data.
-		 *
-		 * However, this method expects an object or a string, not an array. Typecasting the array
-		 * to an object solves the data format discrepancy.
-		 */
-		$value = \is_array($value) ? (object) $value : $value;
+    /**
+     * Method to attach a Form object to the field.
+     *
+     * @param   \SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
+     * @param   mixed              $value    The form field value to validate.
+     * @param   string             $group    The field name group control value.
+     *
+     * @return  boolean  True on success.
+     *
+     * @since   2.0.0
+     */
+    public function setup(\SimpleXMLElement $element, $value, $group = null)
+    {
+        /**
+         * When you have subforms which are not repeatable (i.e. a subform custom field with the
+         * repeat attribute set to 0) you get an array here since the data comes from decoding the
+         * JSON into an associative array, including the media subfield's data.
+         *
+         * However, this method expects an object or a string, not an array. Typecasting the array
+         * to an object solves the data format discrepancy.
+         */
+        $value = \is_array($value) ? (object) $value : $value;
 
-		/**
-		 * If the value is not a string, it is
-		 * most likely within a custom field of type subform
-		 * and the value is a stdClass with properties
-		 * access_token. So it is fine.
-		*/
-		if (\is_string($value)) {
-			json_decode($value);
+        /**
+         * If the value is not a string, it is
+         * most likely within a custom field of type subform
+         * and the value is a stdClass with properties
+         * access_token. So it is fine.
+        */
+        if (\is_string($value)) {
+            json_decode($value);
 
-			// Check if value is a valid JSON string.
-			if ($value !== '' && json_last_error() !== JSON_ERROR_NONE) {
-				$value = '';
-			}
-		} elseif (
-			!\is_object($value)
-			|| !property_exists($value, 'access_token')
-		) {
-			$value->access_token = "";
-		}
+            // Check if value is a valid JSON string.
+            if ($value !== '' && json_last_error() !== JSON_ERROR_NONE) {
+                $value = '';
+            }
+        } elseif (
+            !\is_object($value)
+            || !property_exists($value, 'access_token')
+        ) {
+            $value->access_token = "";
+        }
 
-		if (!parent::setup($element, $value, $group)) {
-			$value = '';
-		}
+        if (!parent::setup($element, $value, $group)) {
+            $value = '';
+        }
 
-		// TODO show in Description $expires_datetime = (property_exists($value, 'expires') && $value->expires) ? (new Date('@' . $value->expires)) : '';
+        // TODO show in Description $expires_datetime = (property_exists($value, 'expires') && $value->expires) ? (new Date('@' . $value->expires)) : '';
 
-		$xml = <<<XML
+        $xml = <<<XML
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset
@@ -146,46 +145,46 @@ class TokenField extends SubformField
 </form>
 XML;
 
-		$this->formsource = $xml;
+        $this->formsource = $xml;
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Method to get the field input markup.
-	 *
-	 * @return  string  The field input markup.
-	 *
-	 * @since   2.0.0
-	 */
-	protected function getInput()
-	{
+    /**
+     * Method to get the field input markup.
+     *
+     * @return  string  The field input markup.
+     *
+     * @since   2.0.0
+     */
+    protected function getInput()
+    {
 
-		$form = $this->form;
-		$formData = $form->getData()->toObject();
-		$text      = (!empty($this->value->access_token)) ? 'PLG_SYSTEM_MAUTIC_TOKEN_REAUTHORIZE_ACTION' : 'PLG_SYSTEM_MAUTIC_TOKEN_ACTION';
+        $form      = $this->form;
+        $formData  = $form->getData()->toObject();
+        $text      = (!empty($this->value->access_token)) ? 'PLG_SYSTEM_MAUTIC_TOKEN_REAUTHORIZE_ACTION' : 'PLG_SYSTEM_MAUTIC_TOKEN_ACTION';
 
-		if ($formData && !empty($formData->params->public_key) && !empty($formData->params->secret_key)) {
-			/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
-			$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
-			$wa->registerAndUseScript('plg_system_mautic.token', 'plg_system_mautic/sismos_token.js');
+        if ($formData && !empty($formData->params->public_key) && !empty($formData->params->secret_key)) {
+            /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+            $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+            $wa->registerAndUseScript('plg_system_mautic.token', 'plg_system_mautic/sismos_token.js');
 
-			$input = '<div class="d-flex my-3">';
-			$btn   = '<button type="submit" id ="genToken" class="btn btn-success me-3">' . Text::_($text) . '</button>';
+            $input = '<div class="d-flex my-3">';
+            $btn   = '<button type="submit" id ="genToken" class="btn btn-success me-3">' . Text::_($text) . '</button>';
 
-			if (!empty($this->value->access_token)) {
-				$btn .= '<button type="submit" id ="clearToken" class="btn btn-danger">' . Text::_('PLG_SYSTEM_MAUTIC_TOKEN_CLEAR_ACTION') . '</button>';
-			}
+            if (!empty($this->value->access_token)) {
+                $btn .= '<button type="submit" id ="clearToken" class="btn btn-danger">' . Text::_('PLG_SYSTEM_MAUTIC_TOKEN_CLEAR_ACTION') . '</button>';
+            }
 
-			$input .= $btn;
-			$input .= '</div>';
-			$input .= '<input type="hidden" value="" name="gentoken" />';
-			$subform = parent::getInput();
-			$input .= \str_replace('class="subform-wrapper"', 'class="subform-wrapper form-grid"', $subform);
+            $input .= $btn;
+            $input .= '</div>';
+            $input .= '<input type="hidden" value="" name="gentoken" />';
+            $subform = parent::getInput();
+            $input .= str_replace('class="subform-wrapper"', 'class="subform-wrapper form-grid"', $subform);
 
-			return $input;
-		}
+            return $input;
+        }
 
-		return '<div class="alert alert-info">' . Text::_('PLG_SYSTEM_MAUTIC_AUTH_MISSING_DATA_ERROR') . '</div>';
-	}
+        return '<div class="alert alert-info">' . Text::_('PLG_SYSTEM_MAUTIC_AUTH_MISSING_DATA_ERROR') . '</div>';
+    }
 }

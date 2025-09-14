@@ -13,8 +13,6 @@
 namespace Mautic\Plugin\System\Mautic\Features;
 
 use Joomla\Application\WebApplicationInterface;
-use Joomla\CMS\Event\Content\ContentPrepareEvent;
-use Joomla\CMS\Uri\Uri;
 use Joomla\Http\Exception\UnexpectedResponseException;
 use Joomla\Http\Http;
 use Joomla\Input\Input;
@@ -59,7 +57,7 @@ class OAuth2Client extends Client
                 'redirect_uri'  => $this->getOption('redirecturi'),
                 'client_id'     => $this->getOption('clientid'),
                 'client_secret' => $this->getOption('clientsecret'),
-                'code'          => $code
+                'code'          => $code,
             ];
 
             $response = $this->http->post($this->getOption('tokenurl'), $data);
@@ -67,7 +65,7 @@ class OAuth2Client extends Client
             if (!($response->code >= 200 && $response->code < 400)) {
                 throw new UnexpectedResponseException(
                     $response,
-                    sprintf(
+                    \sprintf(
                         'Error code %s received requesting access token: %s.',
                         $response->code,
                         $response->body
@@ -122,7 +120,7 @@ class OAuth2Client extends Client
         if (!$token) {
             $token = $this->getToken();
 
-            if (!array_key_exists('refresh_token', $token)) {
+            if (!\array_key_exists('refresh_token', $token)) {
                 throw new \RuntimeException('No refresh token is available.');
             }
 
@@ -141,7 +139,7 @@ class OAuth2Client extends Client
         if (!($response->code >= 200 || $response->code < 400)) {
             throw new UnexpectedResponseException(
                 $response,
-                sprintf(
+                \sprintf(
                     'Error code %s received refreshing token: %s.',
                     $response->code,
                     $response->body

@@ -17,6 +17,8 @@ namespace Mautic\Plugin\System\Mautic\Extension;
 
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
+use Joomla\CMS\Event\Model;
+use Joomla\CMS\Event\Plugin\AjaxEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -24,15 +26,9 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Event\DispatcherInterface;
-use Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
-use Mautic\Plugin\System\Mautic\Helper\MauticApiHelper;
-use Joomla\Event\SubscriberInterface;
-use Joomla\CMS\Event\Model;
-use Joomla\CMS\Event\Plugin\AjaxEvent;
 use Joomla\Database\DatabaseAwareTrait;
-use Mautic\Plugin\System\Mautic\Features\OAuth2Client;
+use Joomla\Event\DispatcherInterface;
+use Joomla\Event\SubscriberInterface;
 use Mautic\Plugin\System\Mautic\Features\PrepareContentTrait;
 use Mautic\Plugin\System\Mautic\Features\TokenTrait;
 
@@ -72,7 +68,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      *
      * @var Mautic\Plugin\System\Mautic\Helper\MauticApiHelper
      */
-    protected $apiHelper;
+    // protected $apiHelper;
 
     /**
      * Constructor.
@@ -82,7 +78,7 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      *
      * @since   3.0.0
      */
-    public function __construct(DispatcherInterface $dispatcher, array $config = []) 
+    public function __construct(DispatcherInterface $dispatcher, array $config = [])
     {
         parent::__construct($dispatcher, $config);
 
