@@ -300,57 +300,57 @@ final class Mautic extends CMSPlugin implements SubscriberInterface
      * @param boolean   $success    whether the user was saved successfully
      * @param string    $msg        error message
      */
-    public function onUserAfterSave($user, $isNew, $success, $msg = '')
-    {
-        $this->log('onUserAfterSave method called.', Log::INFO);
-        $this->log('onUserAfterSave::isNew: ' . var_export($isNew, true), Log::INFO);
-        $this->log('onUserAfterSave::success: ' . var_export($success, true), Log::INFO);
-        $this->log('onUserAfterSave::send_registered: ' . var_export($this->params->get('send_registered'), true), Log::INFO);
+    // public function onUserAfterSave($user, $isNew, $success, $msg = '')
+    // {
+    //     $this->log('onUserAfterSave method called.', Log::INFO);
+    //     $this->log('onUserAfterSave::isNew: ' . var_export($isNew, true), Log::INFO);
+    //     $this->log('onUserAfterSave::success: ' . var_export($success, true), Log::INFO);
+    //     $this->log('onUserAfterSave::send_registered: ' . var_export($this->params->get('send_registered'), true), Log::INFO);
 
-        if ($isNew && $success && $this->params->get('send_registered') == 1) {
-            $this->log('onUserAfterSave: Send the user to Mautic.', Log::INFO);
+    //     if ($isNew && $success && $this->params->get('send_registered') == 1) {
+    //         $this->log('onUserAfterSave: Send the user to Mautic.', Log::INFO);
 
-            try {
-                $this->apiHelper = $this->getMauticApiHelper();
-                $mauticBaseUrl   = $this->apiHelper->getMauticBaseUrl();
-                /** @var \Mautic\Auth\OAuth $auth */
-                $auth           = $this->apiHelper->getMauticAuth();
-                // Check and refresh if needed
-                $authIsValid    = $auth->validateAccessToken();
-                if ($authIsValid && $auth->accessTokenUpdated()) {
-                    $this->apiHelper->storeRefreshedToken($auth);
-                }
-                /** @var \Mautic\Api\Contacts $contactsapi */
-                $mauticApi      = new \Mautic\MauticApi();
-                $contactsapi    = $mauticApi->newApi("contacts", $auth, $mauticBaseUrl . '/api/');
-                $ip             = $this->getUserIP();
-                $name           = explode(' ', $user['name']);
+    //         try {
+    //             $this->apiHelper = $this->getMauticApiHelper();
+    //             $mauticBaseUrl   = $this->apiHelper->getMauticBaseUrl();
+    //             /** @var \Mautic\Auth\OAuth $auth */
+    //             $auth           = $this->apiHelper->getMauticAuth();
+    //             // Check and refresh if needed
+    //             $authIsValid    = $auth->validateAccessToken();
+    //             if ($authIsValid && $auth->accessTokenUpdated()) {
+    //                 $this->apiHelper->storeRefreshedToken($auth);
+    //             }
+    //             /** @var \Mautic\Api\Contacts $contactsapi */
+    //             $mauticApi      = new \Mautic\MauticApi();
+    //             $contactsapi    = $mauticApi->newApi("contacts", $auth, $mauticBaseUrl . '/api/');
+    //             $ip             = $this->getUserIP();
+    //             $name           = explode(' ', $user['name']);
 
-                $mauticUser = [
-                    'ipAddress' => $ip,
-                    'firstname' => isset($name[0]) ? $name[0] : '',
-                    'lastname'  => isset($name[1]) ? $name[1] : '',
-                    'email'     => $user['email'],
-                ];
+    //             $mauticUser = [
+    //                 'ipAddress' => $ip,
+    //                 'firstname' => isset($name[0]) ? $name[0] : '',
+    //                 'lastname'  => isset($name[1]) ? $name[1] : '',
+    //                 'email'     => $user['email'],
+    //             ];
 
-                $this->log('onUserAfterSave::mauticUser: ' . var_export($mauticUser, true), Log::INFO);
+    //             $this->log('onUserAfterSave::mauticUser: ' . var_export($mauticUser, true), Log::INFO);
 
-                $result = $contactsapi->create($mauticUser);
+    //             $result = $contactsapi->create($mauticUser);
 
-                if (isset($result['error'])) {
-                    $this->log('onUserAfterSave::leadApi::create - response: ' . $result['error']['code'] . ": " . $result['error']['message'], Log::ERROR);
-                } elseif (!empty($result['contact']['id'])) {
-                    $this->log('onUserAfterSave: Mautic lead was successfully created with ID ' . $result['lead']['id'], Log::INFO);
-                } else {
-                    $this->log('onUserAfterSave: Mautic lead was NOT successfully created. ' . var_export($result, true), Log::ERROR);
-                }
-            } catch (\Exception $e) {
-                $this->log($e->getMessage(), Log::ERROR);
-            }
-        } else {
-            $this->log('onUserAfterSave: Do not send the user to Mautic.', Log::INFO);
-        }
-    }
+    //             if (isset($result['error'])) {
+    //                 $this->log('onUserAfterSave::leadApi::create - response: ' . $result['error']['code'] . ": " . $result['error']['message'], Log::ERROR);
+    //             } elseif (!empty($result['contact']['id'])) {
+    //                 $this->log('onUserAfterSave: Mautic lead was successfully created with ID ' . $result['lead']['id'], Log::INFO);
+    //             } else {
+    //                 $this->log('onUserAfterSave: Mautic lead was NOT successfully created. ' . var_export($result, true), Log::ERROR);
+    //             }
+    //         } catch (\Exception $e) {
+    //             $this->log($e->getMessage(), Log::ERROR);
+    //         }
+    //     } else {
+    //         $this->log('onUserAfterSave: Do not send the user to Mautic.', Log::INFO);
+    //     }
+    // }
 
     /**
      * Try to guess the real user IP address
