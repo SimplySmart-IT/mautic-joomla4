@@ -155,7 +155,7 @@ trait TokenTrait
 
         if ($token && \array_key_exists('refresh_token', $token) && $token['refresh_token']) {
             $options['userefresh'] = true;
-        } elseif (!$params->get('code', false)) {
+        } elseif (!$app->getInput()->get('code', false, 'raw')) {
             $options['sendheaders'] = true;
         }
 
